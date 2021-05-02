@@ -85,7 +85,7 @@ class VariationFactory(object):
 
     def _populate_param_name_bindings(self, arg_name, fixture_or_param, prefix=''):
         visited = {fixture_or_param.info.id}
-        stack = [(prefix + arg_name, fixture_or_param)]
+        stack = [(arg_name, fixture_or_param)]
         while stack:
             name, fixture = stack.pop()
             if isinstance(fixture, Fixture):
@@ -95,7 +95,8 @@ class VariationFactory(object):
                     visited.add(obj.info.id)
                     stack.append(('{}.{}'.format(name, sub_name), obj))
             elif isinstance(fixture, Parametrization):
-                self._param_name_bindings[name] = fixture
+                name = ".".join(n for n in name.split(".") if n != '_')
+                self._param_name_bindings[prefix + name] = fixture
             else:
                 raise NotImplementedError() # pragma: no cover
 
